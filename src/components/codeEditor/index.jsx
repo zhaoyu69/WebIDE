@@ -15,7 +15,7 @@ import 'codemirror/theme/darcula.css';
 import 'codemirror/addon/display/fullscreen.css';
 import 'codemirror/addon/display/fullscreen.js';
 
-class App extends Component {
+class CodeEditor extends Component {
     constructor(props, context) {
         super(props, context);
         this.state={
@@ -133,4 +133,4 @@ class App extends Component {
     }
 }
 
-export default App;
+export default CodeEditor;
