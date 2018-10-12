@@ -16,9 +16,10 @@ button, input, select, textarea { font-size:100%; }
 table { border-collapse:collapse; border-spacing:0; }
 
 .CodeMirror{
-    height: 100vh!important;
+    height: calc(100vh - 40px)!important;
 }
 
-html,body,#root{
+html,body,#root {
     height: 100vh;
+    overflow: hidden;
 }

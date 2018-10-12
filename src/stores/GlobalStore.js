@@ -1,27 +1,57 @@
-import { observable, action, computed } from "mobx";
+import { observable, computed, toJS } from "mobx";
 
 export default class GlobalStore{
-    @observable fullScreen = false;
-    @observable code = "";
     @observable output = "";
+    @observable tabs = [];
+    @observable activeKey = "";
 
-    @action fullScreenToggle = (cm) => {
-        this.fullScreen = !cm.options.fullScreen;
+    addToTabs=(treenode)=>{
+        // console.log(treenode);
+        const key = treenode.eventKey;
+        const {title, code} = treenode;
+        this.activeKey = key;
+        if(treenode.children) {
+            return;
+        }
+        const isExist = _.findIndex(toJS(this.tabs), (o) => o.key === treenode.eventKey) !== -1;
+        if(!isExist) {
+            this.tabs.push({key, title, code});
+        }
+        this.clearOutput();
     };
 
-    @action fullScreenExit = (cm) => {
-        this.fullScreen = false;
+    removeTab=(targetKey)=>{
+        this.tabs = this.tabs.filter(tab => tab.key !== targetKey);
+        if(this.activeKey === targetKey) {
+            this.activeKey = this.tabs.length?this.tabs[0].key:"";
+        }
     };
 
-    @action codeChange = (code) => {
-        this.code = code;
+    codeChange=(tab, code)=>{
+        const index = _.findIndex(this.tabs, (o) => o.key === tab.key);
+        this.tabs[index].code = code;
     };
 
-    @action getOutput = () => {
-        this.output = this.code;
+    setActiveKey=(activeKey)=>{
+        this.activeKey = activeKey;
+        this.clearOutput();
     };
 
-    @action clearOutput = () => {
+    @computed get activeTitle(){
+        const tab = this.tabs.find(tab => tab.key === this.activeKey);
+        return tab && tab.title || "";
+    }
+
+    @computed get activeCode(){
+        const tab = this.tabs.find(tab => tab.key === this.activeKey);
+        return tab && tab.code || "";
+    }
+
+    getOutput=()=>{
+        this.output = this.activeCode;
+    };
+
+    clearOutput=()=>{
         this.output = "";
     };
 }

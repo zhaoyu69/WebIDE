@@ -6,11 +6,11 @@ import {Button} from 'antd';
 @observer
 class Output extends React.Component {
     render() {
-        const {output, getOutput, clearOutput} = this.props.store;
+        const {activeTitle, output, getOutput, clearOutput} = this.props.store;
         return (
             <div className={styles.output}>
                 <div>
-                    <h3 className={styles.title}>Output</h3>
+                    <h3 className={styles.title}>{activeTitle}</h3>
                     <div className={styles.btnGroup}>
                         <Button type="primary" onClick={getOutput}>运行</Button>&nbsp;
                         <Button type="primary" onClick={clearOutput}>清空</Button>

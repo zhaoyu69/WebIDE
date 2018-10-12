@@ -3,12 +3,13 @@ import {observer} from "mobx-react";
 import { Tree } from 'antd';
 const DirectoryTree = Tree.DirectoryTree;
 const TreeNode = Tree.TreeNode;
-import styles from './index.less';
+import treenodes from 'utils/treenode';
 
 @observer
 class TreeView extends React.Component {
-    onSelect = () => {
-        console.log('Trigger Select');
+    onSelect = (selectKeys, e) => {
+        // console.log(selectKeys, e);
+        this.props.store.addToTabs(e.node.props);
     };
 
     onExpand = () => {
@@ -17,24 +18,19 @@ class TreeView extends React.Component {
 
     render() {
         return (
-            <div className={styles.treeview}>
-                <h3>Project</h3>
-                <DirectoryTree
-                    multiple
-                    defaultExpandAll
-                    onSelect={this.onSelect}
-                    onExpand={this.onExpand}
-                >
-                    <TreeNode title="parent 0" key="0-0">
-                        <TreeNode title="leaf 0-0" key="0-0-0" isLeaf />
-                        <TreeNode title="leaf 0-1" key="0-0-1" isLeaf />
-                    </TreeNode>
-                    <TreeNode title="parent 1" key="0-1">
-                        <TreeNode title="leaf 1-0" key="0-1-0" isLeaf />
-                        <TreeNode title="leaf 1-1" key="0-1-1" isLeaf />
-                    </TreeNode>
-                </DirectoryTree>
-            </div>
+            <DirectoryTree
+                multiple
+                defaultExpandAll
+                onSelect={this.onSelect}
+                onExpand={this.onExpand}
+            >
+                <TreeNode title="Project" key="0-0">
+                    {treenodes.map(treenode =>{
+                        const {title, key, code} = treenode;
+                        return <TreeNode title={title} key={key} code={code} isLeaf />
+                    })}
+                </TreeNode>
+            </DirectoryTree>
         );
     }
 }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {toJS} from 'mobx';
 import {observer} from 'mobx-react';
 import CodeMirror from 'react-codemirror';
 // 编辑器样式
@@ -16,10 +17,28 @@ import 'codemirror/theme/darcula.css';
 import 'codemirror/addon/display/fullscreen.css';
 import 'codemirror/addon/display/fullscreen.js';
 
+import {Tabs} from 'antd';
+const TabPane = Tabs.TabPane;
+
 @observer
 class CodeEditor extends Component {
+    onEdit=(targetKey, action)=>{
+        this[action](targetKey);
+    };
+
+    add=()=>{
+        console.log("add");
+    };
+
+    remove=(targetKey)=>{
+        console.log("remove");
+        this.props.store.removeTab(targetKey);
+    };
+
     render() {
-        const {code, fullScreen, codeChange} = this.props.store;
+        const {store} = this.props;
+        const tabs = toJS(store.tabs);
+        const activeKey = toJS(store.activeKey);
         const options = {
             // 行号
             lineNumbers: true,
@@ -28,17 +47,29 @@ class CodeEditor extends Component {
             // 提示功能热键
             extraKeys: {
                 "Ctrl": "autocomplete",
-                // "F11": fullScreenToggle,
-                // "Esc": fullScreenExit
             },
             // 主题
             theme: "darcula",
-            // 全屏
-            fullScreen,
         };
         return (
-            <div>
-                <CodeMirror options={options} onChange={codeChange} value={code}/>
+            <div className="codeEditor">
+                <Tabs
+                    type="editable-card"
+                    // hideAdd
+                    tabBarStyle={{margin:"0"}}
+                    onEdit={this.onEdit}
+                    activeKey={activeKey}
+                    onTabClick={store.setActiveKey}
+                >
+                    {tabs.map(tab =>{
+                        const {key, title, code} = tab;
+                        return (
+                            <TabPane tab={title} key={key} closable={true}>
+                                <CodeMirror options={options} onChange={(code)=>store.codeChange(tab, code)} value={code}/>
+                            </TabPane>
+                        )}
+                    )}
+                </Tabs>
             </div>
         );
     }
