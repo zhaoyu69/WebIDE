@@ -4,6 +4,57 @@ export default class GlobalStore{
     @observable output = "";
     @observable tabs = [];
     @observable activeKey = "";
+    @observable params = [];
+
+    getParams=()=>{
+        this.params = [
+            {
+                name:"参数1",
+                value:"1",
+                key:1
+            },
+            {
+                name:"参数2",
+                value:"2",
+                key:2
+            }
+        ];
+    };
+
+    // 参数数量
+    @computed get paramsCount(){
+        return this.params.length;
+    }
+
+    // 保存所有参数
+    saveParams=()=>{
+        console.log("params:", toJS(this.params));
+    };
+
+    // 删除参数
+    removeParam=(key)=>{
+        this.params = this.params.filter(param => param.key !== key);
+    };
+
+    // 添加新参数
+    addParam=()=>{
+        const newParam = {
+            key: this.paramsCount + 1,
+            name: '新的参数名',
+            value: '新的参数值',
+        };
+        this.params.push(newParam);
+    };
+
+    // 单个参数修改
+    saveParam=(row)=>{
+        const index = this.params.findIndex(item => row.key === item.key);
+        const item = this.params[index];
+        this.params.splice(index, 1, {
+            ...item,
+            ...row,
+        });
+    };
 
     addToTabs=(treenode)=>{
         // console.log(treenode);
