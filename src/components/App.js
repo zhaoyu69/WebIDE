@@ -9,18 +9,25 @@ const { Header, Content, Footer, Sider } = Layout;
 
 @observer
 class App extends Component {
+    constructor(props, context) {
+        super(props, context);
+        globalStore.getOnlineDevices();
+    }
+
     render() {
+        // const {deviceid} = globalStore;
+        // console.log("deviceid:", deviceid);
         return (
             <Layout style={{height:"100vh"}}>
                 <Sider style={{background:"#f0f2f5", borderRight:"1px solid #ccc"}}>
                     <TreeView store={globalStore}/>
                 </Sider>
                 <Content>
-                    <Row>
-                        <Col md={16}>
+                    <Row style={{height:"100vh"}}>
+                        <Col md={16} style={{height:"100vh"}}>
                             <CodeEditor store={globalStore}/>
                         </Col>
-                        <Col md={8}>
+                        <Col md={8} style={{height:"100vh"}}>
                             <Output store={globalStore}/>
                         </Col>
                     </Row>
